@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+	
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Building a music recommendation system with Apache Spark and LastFM data</title>
+  <meta name="description" content="LastFM is a social network for exploring music. It integrates into MP3 players, and tracks the music played by its users. It then uses this data to make recc...">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://yourdomain.com/apachespark,scala,recommendation/systems,/implicit/preference/modelling/2016/09/19/lastfm.html">
+  <link rel="alternate" type="application/rss+xml" title="James Allen" href="http://yourdomain.com/feed.xml">
+</head>
+
+	
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">James Allen</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Building a music recommendation system with Apache Spark and LastFM data</h1>
+    <p class="post-meta"><time datetime="2016-09-19T14:03:05+08:00" itemprop="datePublished">Sep 19, 2016</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    TeX: {
+      equationNumbers: {
+        autoNumber: "AMS"
+      }
+    },
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true,
+    }
+  });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<p>LastFM is a social network for exploring music. It integrates into MP3 players, and tracks the music played by its users. It then uses this data to make reccomendations to its users about the music they might enjoy. 
+Collaborative filtering systems are platforms that use data from a large number of users, each rating a relatively small number of items, to predict the preferences of individual users across all items. Such items can include movies, books, or in the case of this exercise, musical artists. 
+Note that this model avoids the need for information about the users and items themselves, relying exclusively on the preferences of users for items.</p>
+
+<p>Such systems operate by representing users and items as vectors of latent factors, which are numerical values reflecting their abstract qualities. The number of latent factors used in a model determines its complexity and therefore influences the bias-variance tradeoff. Briefly, the method works by representing the known preferences of all users against all items in a sparse matrix. The matrix is then factorised into user and item matrices (each with one dimension corresponding to the number of latent factors). These matrices are then multiplied together, producing a dense matrix of the same shape as the original sparse matrix. The previously unknown user item preferences are thereby predicted.</p>
+
+<p>The LastFM data is an example of <a href="yifanhu.net/PUB/cf.pdf">implicit preference data</a>. This is data in which the user has not actually expressed their preference for an item directly. Such data includes things like how long a user watched a video for, how long a user spent on a webpage, or, in this case, how many times a user listened to a particular artist. Such data has the following properties that can complicate its use collaborative filtering:</p>
+
+<ol>
+  <li><b>No negative feedback:</b> A user didn’t watch a show. Is this because they don’t like that show, or because they are not aware of its existence?</li>
+  <li><b>Inherently noisy data:</b> Users can (and do) consume content or products that they dislike.</li>
+  <li><b>Implicit feedback measures actions, which do not necessarily reflect preferences:</b> For example, a user’s favourite TV series with a short run will be watched fewer times than a long-running tv show that the user only moderately enjoys. Another consideration is user-to-user variations in overall behaviour. In our case, a person who listens to a lot of music will have higher counts across all items compared to someone who listens to less music generally.</li>
+  <li><b>Implicit feedback has no absent values:</b> With explicit feedback, items that user has not rated are not used to train the model. With implicit feedback, items that a user has not interacted with are given an observed value of 0 and are used in model training. As a consequence of this, the cost function has significantly more terms, meaning that the stochastic gradient descent optimisation used in explicit feedback cannot be used. Instead, an alternating least squares approach is used by alternatively fixing the user factors and items factors.</li>
+</ol>
+
+<p>In this exercise I used Apache Spark to write a scala program to parse LastFM data, then build, tune, and evaluate a reccomendation model. Apache Spark has excellent support for implicit preference modelling, which together with its performance and scalability makes it a great choice for this task.</p>
+
+<p>The <a href="http://www.dtic.upf.edu/~ocelma/MusicRecommendationDataset/index.html">LastFM dataset</a> is a 1.5gb file, with each row containing a tuple of the form (user, artist-mbid, artist-name, total-plays)</p>
+
+<p>For convenience while writing and testing the code, I took a subsample of the data:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">james@Yggdrasil:~/Documents/LastFM/data$ </span>wc -l usersha1-artmbid-artname-plays.tsv 
+17559530 usersha1-artmbid-artname-plays.tsv
+<span class="gp">james@Yggdrasil:~/Documents/LastFM/data$ </span>head -n 100000 usersha1-artmbid-artname-plays.tsv &gt; sample_user_artist.tsv</code></pre></figure>
+
+<p>The parser function ingests the data, giving each user and artist a unique numerical value (user_id and artist_id). It scales each play count by the total play count for that user, providing an explicit user-artist preference estimate.
+It then migrates each entry into the spark Rating class (which holds the user_id, artist_id, and user-artist-preference), before finally returning the collection of Ratings as an RDD.</p>
+
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">object</span> <span class="nc">Parser</span> <span class="o">{</span>
+
+  <span class="cm">/**
+    * Parses the raw input to give Rating objects (user,item,preference)
+    *
+    */</span>
+  <span class="k">case</span> <span class="k">class</span> <span class="nc">RawRow</span><span class="o">(</span><span class="n">user</span><span class="k">:</span><span class="kt">String</span><span class="o">,</span><span class="n">artist</span><span class="k">:</span><span class="kt">String</span><span class="o">,</span><span class="n">play_count</span><span class="k">:</span><span class="kt">Double</span><span class="o">)</span>
+  <span class="k">def</span> <span class="n">parseData</span><span class="o">(</span><span class="n">data_filepath</span><span class="k">:</span><span class="kt">String</span><span class="o">,</span><span class="n">sc</span><span class="k">:</span><span class="kt">SparkContext</span><span class="o">,</span><span class="n">sparks</span><span class="k">:</span><span class="kt">SQLContext</span><span class="o">)</span><span class="k">:</span><span class="o">(</span><span class="kt">RDD</span><span class="o">[</span><span class="kt">Rating</span><span class="o">],(</span><span class="nc">StringIndexerModel</span><span class="o">,</span><span class="nc">StringIndexerModel</span><span class="o">))</span> <span class="k">=</span> <span class="o">{</span>
+    <span class="k">import</span> <span class="nn">sparks.implicits._</span>
+    <span class="k">val</span> <span class="n">count_value_regex</span> <span class="k">=</span> <span class="s">"\b0*([1-9][0-9]*|0)\b"</span><span class="o">.</span><span class="n">r</span>
+    <span class="k">val</span> <span class="n">raw_data</span><span class="k">:</span> <span class="kt">DataFrame</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="n">data_filepath</span><span class="o">).</span><span class="n">map</span> <span class="o">{</span>
+      <span class="n">l</span> <span class="k">=&gt;</span> <span class="n">l</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">"\t"</span><span class="o">)</span>
+    <span class="o">}.</span><span class="n">map</span><span class="o">{</span>
+      <span class="k">case</span> <span class="nc">Array</span><span class="o">(</span><span class="n">user</span><span class="k">:</span><span class="kt">String</span><span class="o">,</span><span class="n">artist</span><span class="k">:</span><span class="kt">String</span><span class="o">,</span><span class="n">artist_name</span><span class="k">:</span><span class="kt">String</span><span class="o">,</span><span class="n">count</span><span class="k">:</span><span class="kt">String</span><span class="o">)</span>
+      <span class="k">=&gt;</span> <span class="nc">RawRow</span><span class="o">(</span><span class="n">user</span><span class="o">,</span><span class="n">artist</span><span class="o">,</span><span class="n">count</span><span class="o">.</span><span class="n">trim</span><span class="o">.</span><span class="n">toDouble</span><span class="o">)</span>
+      <span class="k">case</span> <span class="n">x</span> <span class="k">=&gt;</span> <span class="k">throw</span> <span class="k">new</span> <span class="nc">Exception</span><span class="o">(</span><span class="n">s</span><span class="s">"Unable to parse raw row $x"</span><span class="o">)</span>
+    <span class="o">}.</span><span class="n">toDF</span><span class="o">()</span>
+    <span class="k">val</span> <span class="n">user_string_indexer</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StringIndexer</span><span class="o">()</span>
+      <span class="o">.</span><span class="n">setInputCol</span><span class="o">(</span><span class="s">"user"</span><span class="o">)</span>
+      <span class="o">.</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">"UserID"</span><span class="o">)</span>
+      <span class="o">.</span><span class="n">fit</span><span class="o">(</span><span class="n">raw_data</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">artist_string_indexer</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StringIndexer</span><span class="o">()</span>
+        <span class="o">.</span><span class="n">setInputCol</span><span class="o">(</span><span class="s">"artist"</span><span class="o">)</span>
+        <span class="o">.</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">"ArtistID"</span><span class="o">)</span>
+        <span class="o">.</span><span class="n">fit</span><span class="o">(</span><span class="n">raw_data</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">indexed_data</span> <span class="k">=</span> <span class="n">user_string_indexer</span>
+      <span class="o">.</span><span class="n">transform</span><span class="o">(</span><span class="n">artist_string_indexer</span>
+        <span class="o">.</span><span class="n">transform</span><span class="o">(</span><span class="n">raw_data</span><span class="o">))</span>
+    <span class="k">val</span> <span class="n">user_totals</span> <span class="k">=</span> <span class="n">indexed_data</span>
+      <span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="s">"UserID"</span><span class="o">,</span><span class="s">"play_count"</span><span class="o">)</span>
+      <span class="o">.</span><span class="n">groupBy</span><span class="o">(</span><span class="s">"UserID"</span><span class="o">)</span>
+      <span class="o">.</span><span class="n">sum</span><span class="o">(</span><span class="s">"play_count"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">user_data_with_totals</span> <span class="k">=</span> <span class="n">indexed_data</span>
+      <span class="o">.</span><span class="n">join</span><span class="o">(</span><span class="n">user_totals</span><span class="o">,</span><span class="nc">Seq</span><span class="o">(</span><span class="s">"UserID"</span><span class="o">))</span>
+      <span class="o">.</span><span class="n">withColumn</span><span class="o">(</span><span class="s">"RelativePreference"</span><span class="o">,</span><span class="n">$</span><span class="s">"play_count"</span><span class="o">/</span><span class="n">$</span><span class="s">"sum(play_count)"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">rating_rdd</span><span class="k">:</span><span class="kt">RDD</span><span class="o">[</span><span class="kt">Rating</span><span class="o">]</span> <span class="k">=</span> <span class="n">user_data_with_totals</span>
+      <span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="s">"UserID"</span><span class="o">,</span><span class="s">"ArtistID"</span><span class="o">,</span><span class="s">"RelativePreference"</span><span class="o">)</span>
+      <span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="o">{</span>
+      <span class="k">case</span> <span class="nc">Row</span><span class="o">(</span><span class="n">userid</span><span class="k">:</span><span class="kt">Double</span><span class="o">,</span><span class="n">artistid</span><span class="k">:</span><span class="kt">Double</span><span class="o">,</span><span class="n">preference</span><span class="k">:</span><span class="kt">Double</span><span class="o">)</span>
+      <span class="k">=&gt;</span> <span class="nc">Rating</span><span class="o">(</span><span class="n">userid</span><span class="o">.</span><span class="n">toInt</span><span class="o">,</span><span class="n">artistid</span><span class="o">.</span><span class="n">toInt</span><span class="o">,</span><span class="n">preference</span><span class="o">.</span><span class="n">toFloat</span><span class="o">)</span>
+      <span class="k">case</span> <span class="n">x</span> <span class="k">=&gt;</span> <span class="k">throw</span> <span class="k">new</span> <span class="nc">Exception</span><span class="o">(</span><span class="n">s</span><span class="s">"Unable to parse indexed row $x"</span><span class="o">)</span>
+    <span class="o">}</span>
+    <span class="o">(</span><span class="n">rating_rdd</span><span class="o">,(</span><span class="n">user_string_indexer</span><span class="o">,</span><span class="n">artist_string_indexer</span><span class="o">))</span>
+  <span class="o">}</span></code></pre></figure>
+
+<p>The implicit preference model has three main parameters:</p>
+
+<ol>
+  <li>
+    <p><script type="math/tex">\alpha</script> : This parameter determines how much confidence in a preference increases with the number of observations ( ie how much our confidence in a preference estimate rises as the number of observations increases).</p>
+  </li>
+  <li>
+    <p><script type="math/tex">\lambda</script>: This is a regularization parameter used during the least-squares estimation of the latent factor matrices.</p>
+  </li>
+  <li>
+    <p>rank: This is the number of latent factors used in the model.</p>
+  </li>
+</ol>
+
+<p>In order to choose the best parameters for the model, the dataset was divided into a training dataset (60% of the data), a validation dataset (20%) and a hold-out testing dataset(20%). The training and validation datasets were used to choose parameters, and the final model performance was estimated using the hold-out dataset. Cross-validation would be a superior choice for parameter estimation, if sufficient computational resources were available.</p>
+
+<p>Evaluation of the models was made using the root mean square error scaled by the difference between minimum and maximum preference values.</p>
+
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">object</span> <span class="nc">MFModelling</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">getRMSE</span><span class="o">(</span><span class="n">model</span><span class="k">:</span> <span class="kt">MatrixFactorizationModel</span><span class="o">,</span> <span class="n">data</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">Rating</span><span class="o">],</span> <span class="n">n</span><span class="k">:</span> <span class="kt">Long</span><span class="o">,</span><span class="n">max</span><span class="k">:</span><span class="kt">Double</span><span class="o">,</span><span class="n">min</span><span class="k">:</span><span class="kt">Double</span><span class="o">)</span><span class="k">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="k">val</span> <span class="n">predictions</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">Rating</span><span class="o">]</span> <span class="k">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="o">(</span><span class="n">data</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">x</span><span class="o">.</span><span class="n">user</span><span class="o">,</span> <span class="n">x</span><span class="o">.</span><span class="n">product</span><span class="o">)))</span>
+    <span class="k">val</span> <span class="n">predictionsAndRatings</span> <span class="k">=</span> <span class="n">predictions</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="o">((</span><span class="n">x</span><span class="o">.</span><span class="n">user</span><span class="o">,</span> <span class="n">x</span><span class="o">.</span><span class="n">product</span><span class="o">),</span> <span class="n">x</span><span class="o">.</span><span class="n">rating</span><span class="o">))</span>
+      <span class="o">.</span><span class="n">join</span><span class="o">(</span><span class="n">data</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="o">((</span><span class="n">x</span><span class="o">.</span><span class="n">user</span><span class="o">,</span> <span class="n">x</span><span class="o">.</span><span class="n">product</span><span class="o">),</span> <span class="n">x</span><span class="o">.</span><span class="n">rating</span><span class="o">))).</span><span class="n">values</span>
+    <span class="o">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="o">(</span><span class="n">predictionsAndRatings</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">x</span><span class="o">.</span><span class="n">_1</span> <span class="o">-</span> <span class="n">x</span><span class="o">.</span><span class="n">_2</span><span class="o">)</span> <span class="o">*</span> <span class="o">(</span><span class="n">x</span><span class="o">.</span><span class="n">_1</span> <span class="o">-</span> <span class="n">x</span><span class="o">.</span><span class="n">_2</span><span class="o">)).</span><span class="n">reduce</span><span class="o">(</span><span class="k">_</span> <span class="o">+</span> <span class="k">_</span><span class="o">)</span> <span class="o">/</span> <span class="n">n</span><span class="o">))/(</span><span class="n">max</span><span class="o">-</span><span class="n">min</span><span class="o">)</span>
+  <span class="o">}</span>
+
+  <span class="k">def</span> <span class="n">tune</span><span class="o">(</span><span class="n">ratings</span><span class="k">:</span><span class="kt">RDD</span><span class="o">[</span><span class="kt">Rating</span><span class="o">],</span><span class="n">sc</span><span class="k">:</span><span class="kt">SparkContext</span><span class="o">)</span> <span class="k">=</span> <span class="o">{</span>
+    <span class="k">val</span> <span class="n">output_log</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">File</span><span class="o">(</span><span class="s">"output_log.txt"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">log_writer</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">PrintWriter</span><span class="o">(</span><span class="n">output_log</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">n_cases</span> <span class="k">=</span> <span class="n">ratings</span><span class="o">.</span><span class="n">count</span><span class="o">()</span>
+    <span class="k">val</span> <span class="n">partitions</span> <span class="k">=</span> <span class="n">ratings</span><span class="o">.</span><span class="n">randomSplit</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="mf">0.6</span><span class="o">,</span><span class="mf">0.2</span><span class="o">,</span><span class="mf">0.2</span><span class="o">),</span><span class="mi">1234L</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">train</span> <span class="k">=</span> <span class="n">partitions</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">valid</span> <span class="k">=</span> <span class="n">partitions</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">num_valid</span> <span class="k">=</span> <span class="n">valid</span><span class="o">.</span><span class="n">count</span><span class="o">()</span>
+    <span class="k">val</span> <span class="n">test</span> <span class="k">=</span> <span class="n">partitions</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">alphas</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="mf">10d</span><span class="o">,</span><span class="mf">40d</span><span class="o">,</span><span class="mf">60d</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">lambdas</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="mf">1d</span><span class="o">,</span><span class="mf">10d</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">ranks</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="mi">8</span><span class="o">,</span><span class="mi">16</span><span class="o">,</span><span class="mi">32</span><span class="o">)</span>
+    <span class="k">var</span> <span class="n">best_lambda</span> <span class="k">=</span> <span class="mf">0d</span>
+    <span class="k">var</span> <span class="n">best_alpha</span> <span class="k">=</span> <span class="mf">0d</span>
+    <span class="k">var</span> <span class="n">best_rank</span> <span class="k">=</span> <span class="mi">0</span>
+    <span class="k">var</span> <span class="n">best_score</span> <span class="k">=</span> <span class="mf">100000d</span>
+    <span class="k">val</span> <span class="n">preferences</span> <span class="k">=</span> <span class="n">ratings</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">r</span> <span class="k">=&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">rating</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">max_pref</span> <span class="k">=</span> <span class="n">preferences</span><span class="o">.</span><span class="n">max</span><span class="o">()</span>
+    <span class="k">val</span> <span class="n">min_pref</span> <span class="k">=</span> <span class="n">preferences</span><span class="o">.</span><span class="n">min</span><span class="o">()</span>
+    <span class="k">for</span> <span class="o">(</span><span class="n">alpha</span><span class="k">&lt;-</span><span class="n">alphas</span> <span class="o">;</span> <span class="n">lambda</span><span class="k">&lt;-</span><span class="n">lambdas</span><span class="o">;</span><span class="n">rank</span> <span class="k">&lt;-</span><span class="n">ranks</span><span class="o">){</span>
+      <span class="k">val</span> <span class="n">model</span> <span class="k">=</span> <span class="nc">ALS</span><span class="o">.</span><span class="n">trainImplicit</span><span class="o">(</span><span class="n">train</span><span class="o">,</span><span class="n">rank</span><span class="o">,</span><span class="mi">10</span><span class="o">,</span><span class="n">lambda</span><span class="o">,</span><span class="n">alpha</span><span class="o">)</span>
+      <span class="k">val</span> <span class="n">model_rmse</span> <span class="k">=</span> <span class="n">getRMSE</span><span class="o">(</span><span class="n">model</span><span class="o">,</span><span class="n">valid</span><span class="o">,</span><span class="n">num_valid</span><span class="o">,</span><span class="n">max_pref</span><span class="o">,</span><span class="n">min_pref</span><span class="o">)</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">model_rmse</span> <span class="o">&lt;</span> <span class="n">best_score</span><span class="o">){</span>
+        <span class="n">best_lambda</span> <span class="k">=</span> <span class="n">lambda</span>
+        <span class="n">best_alpha</span> <span class="k">=</span> <span class="n">alpha</span>
+        <span class="n">best_rank</span> <span class="k">=</span> <span class="n">rank</span>
+        <span class="n">best_score</span> <span class="k">=</span> <span class="n">model_rmse</span>
+      <span class="o">}</span>
+      <span class="n">log_writer</span><span class="o">.</span><span class="n">write</span><span class="o">(</span><span class="n">s</span><span class="s">"Lambda: $lambda Alpha: $alpha Rank: $rank Produced RMSE of $model_rmse \n"</span><span class="o">)</span>
+      <span class="n">log_writer</span><span class="o">.</span><span class="n">flush</span><span class="o">()</span>
+    <span class="o">}</span>
+    <span class="n">log_writer</span><span class="o">.</span><span class="n">write</span><span class="o">(</span><span class="s">"Best Model:\n"</span><span class="o">)</span>
+    <span class="n">log_writer</span><span class="o">.</span><span class="n">flush</span><span class="o">()</span>
+    <span class="n">log_writer</span><span class="o">.</span><span class="n">write</span><span class="o">(</span><span class="n">s</span><span class="s">"Lambda: $best_lambda Alpha: $best_alpha Rank: $best_rank Produced RMSE of $best_score\n"</span><span class="o">)</span>
+    <span class="n">log_writer</span><span class="o">.</span><span class="n">flush</span><span class="o">()</span>
+
+    <span class="k">val</span> <span class="n">best_model</span> <span class="k">=</span> <span class="nc">ALS</span><span class="o">.</span><span class="n">trainImplicit</span><span class="o">(</span><span class="n">train</span><span class="o">,</span><span class="n">best_rank</span><span class="o">,</span><span class="mi">10</span><span class="o">,</span><span class="n">best_lambda</span><span class="o">,</span><span class="n">best_alpha</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">n_test</span> <span class="k">=</span> <span class="n">test</span><span class="o">.</span><span class="n">count</span><span class="o">()</span>
+    <span class="k">val</span> <span class="n">best_model_test_rmse</span> <span class="k">=</span> <span class="n">getRMSE</span><span class="o">(</span><span class="n">best_model</span><span class="o">,</span><span class="n">test</span><span class="o">,</span><span class="n">n_test</span><span class="o">,</span><span class="n">max_pref</span><span class="o">,</span><span class="n">min_pref</span><span class="o">)</span>
+    <span class="n">log_writer</span><span class="o">.</span><span class="n">write</span><span class="o">(</span><span class="n">s</span><span class="s">"Best model test dataset RMSE:$best_model_test_rmse"</span><span class="o">)</span>
+    <span class="n">log_writer</span><span class="o">.</span><span class="n">flush</span><span class="o">()</span>
+    <span class="n">log_writer</span><span class="o">.</span><span class="n">close</span><span class="o">()</span>
+  <span class="o">}</span>
+
+<span class="o">}</span></code></pre></figure>
+
+<p>The output log looked like this:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Lambda: 1.0 Alpha: 10.0 Rank: 8 Produced RMSE of 0.03128204092813031 
+Lambda: 1.0 Alpha: 10.0 Rank: 16 Produced RMSE of 0.031209175581209652 
+Lambda: 1.0 Alpha: 10.0 Rank: 32 Produced RMSE of 0.03116572424952008 
+Lambda: 10.0 Alpha: 10.0 Rank: 8 Produced RMSE of 0.03163246585234661 
+Lambda: 10.0 Alpha: 10.0 Rank: 16 Produced RMSE of 0.03163246585234661 
+Lambda: 10.0 Alpha: 10.0 Rank: 32 Produced RMSE of 0.03163246585234661 
+Lambda: 1.0 Alpha: 40.0 Rank: 8 Produced RMSE of 0.027157533550352376 
+Lambda: 1.0 Alpha: 40.0 Rank: 16 Produced RMSE of 0.026827741699611708 
+Lambda: 1.0 Alpha: 40.0 Rank: 32 Produced RMSE of 0.026717258416109477 
+Lambda: 10.0 Alpha: 40.0 Rank: 8 Produced RMSE of 0.03163246585233765 
+Lambda: 10.0 Alpha: 40.0 Rank: 16 Produced RMSE of 0.03163246585232619 
+Lambda: 10.0 Alpha: 40.0 Rank: 32 Produced RMSE of 0.031632465852299806 
+Lambda: 1.0 Alpha: 60.0 Rank: 8 Produced RMSE of 0.030867133206493664 
+Lambda: 1.0 Alpha: 60.0 Rank: 16 Produced RMSE of 0.031938792199053954 
+Lambda: 1.0 Alpha: 60.0 Rank: 32 Produced RMSE of 0.03388156645271553 
+Lambda: 10.0 Alpha: 60.0 Rank: 8 Produced RMSE of 0.031632465841033346 
+Lambda: 10.0 Alpha: 60.0 Rank: 16 Produced RMSE of 0.03163246584102217 
+Lambda: 10.0 Alpha: 60.0 Rank: 32 Produced RMSE of 0.03163246584099654 
+Best Model:
+Lambda: 1.0 Alpha: 40.0 Rank: 32 Produced RMSE of 0.026717258416109477
+Best model test dataset RMSE:0.02522357253146869
+</code></pre>
+</div>
+
+
+  </div>
+
+</article>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">James Allen</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li>James Allen</li>
+          <li><a href="mailto:james.allen.1248@gmail.com">james.allen.1248@gmail.com</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/jlln"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">jlln</span></a>
+
+          </li>
+          
+
+          
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>Assorted data analysis and programming projects.
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

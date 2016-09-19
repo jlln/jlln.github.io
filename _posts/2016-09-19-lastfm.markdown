@@ -1,0 +1,188 @@
+---
+layout: post
+title:  "Building a music recommendation system with Apache Spark and LastFM data"
+date:   2016-09-19 14:03:05 +0800
+categories: ApacheSpark,Scala,Recommendation Systems, Implicit Preference Modelling
+---
+{% include mathjax_support.html %}
+LastFM is a social network for exploring music. It integrates into MP3 players, and tracks the music played by its users. It then uses this data to make reccomendations to its users about the music they might enjoy. 
+Collaborative filtering systems are platforms that use data from a large number of users, each rating a relatively small number of items, to predict the preferences of individual users across all items. Such items can include movies, books, or in the case of this exercise, musical artists. 
+Note that this model avoids the need for information about the users and items themselves, relying exclusively on the preferences of users for items.
+
+Such systems operate by representing users and items as vectors of latent factors, which are numerical values reflecting their abstract qualities. The number of latent factors used in a model determines its complexity and therefore influences the bias-variance tradeoff. Briefly, the method works by representing the known preferences of all users against all items in a sparse matrix. The matrix is then factorised into user and item matrices (each with one dimension corresponding to the number of latent factors). These matrices are then multiplied together, producing a dense matrix of the same shape as the original sparse matrix. The previously unknown user item preferences are thereby predicted.
+
+The LastFM data is an example of [implicit preference data](yifanhu.net/PUB/cf.pdf). This is data in which the user has not actually expressed their preference for an item directly. Such data includes things like how long a user watched a video for, how long a user spent on a webpage, or, in this case, how many times a user listened to a particular artist. Such data has the following properties that can complicate its use collaborative filtering:
+
+1. <b>No negative feedback:</b> A user didn’t watch a show. Is this because they don’t like that show, or because they are not aware of its existence?
+2. <b>Inherently noisy data:</b> Users can (and do) consume content or products that they dislike.
+3. <b>Implicit feedback measures actions, which do not necessarily reflect preferences:</b> For example, a user’s favourite TV series with a short run will be watched fewer times than a long-running tv show that the user only moderately enjoys. Another consideration is user-to-user variations in overall behaviour. In our case, a person who listens to a lot of music will have higher counts across all items compared to someone who listens to less music generally.
+5. <b>Implicit feedback has no absent values:</b> With explicit feedback, items that user has not rated are not used to train the model. With implicit feedback, items that a user has not interacted with are given an observed value of 0 and are used in model training. As a consequence of this, the cost function has significantly more terms, meaning that the stochastic gradient descent optimisation used in explicit feedback cannot be used. Instead, an alternating least squares approach is used by alternatively fixing the user factors and items factors.
+
+
+In this exercise I used Apache Spark to write a scala program to parse LastFM data, then build, tune, and evaluate a reccomendation model. Apache Spark has excellent support for implicit preference modelling, which together with its performance and scalability makes it a great choice for this task.
+
+The [LastFM dataset](http://www.dtic.upf.edu/~ocelma/MusicRecommendationDataset/index.html) is a 1.5gb file, with each row containing a tuple of the form (user, artist-mbid, artist-name, total-plays)
+
+
+
+For convenience while writing and testing the code, I took a subsample of the data:
+{%highlight bash %}
+james@Yggdrasil:~/Documents/LastFM/data$ wc -l usersha1-artmbid-artname-plays.tsv 
+17559530 usersha1-artmbid-artname-plays.tsv
+james@Yggdrasil:~/Documents/LastFM/data$ head -n 100000 usersha1-artmbid-artname-plays.tsv > sample_user_artist.tsv
+
+{% endhighlight %}
+
+The parser function ingests the data, giving each user and artist a unique numerical value (user_id and artist_id). It scales each play count by the total play count for that user, providing an explicit user-artist preference estimate.
+It then migrates each entry into the spark Rating class (which holds the user_id, artist_id, and user-artist-preference), before finally returning the collection of Ratings as an RDD.
+
+{% highlight scala %}
+object Parser {
+
+  /**
+    * Parses the raw input to give Rating objects (user,item,preference)
+    *
+    */
+  case class RawRow(user:String,artist:String,play_count:Double)
+  def parseData(data_filepath:String,sc:SparkContext,sparks:SQLContext):(RDD[Rating],(StringIndexerModel,StringIndexerModel)) = {
+    import sparks.implicits._
+    val count_value_regex = "\b0*([1-9][0-9]*|0)\b".r
+    val raw_data: DataFrame = sc.textFile(data_filepath).map {
+      l => l.split("\t")
+    }.map{
+      case Array(user:String,artist:String,artist_name:String,count:String)
+      => RawRow(user,artist,count.trim.toDouble)
+      case x => throw new Exception(s"Unable to parse raw row $x")
+    }.toDF()
+    val user_string_indexer = new StringIndexer()
+      .setInputCol("user")
+      .setOutputCol("UserID")
+      .fit(raw_data)
+    val artist_string_indexer = new StringIndexer()
+        .setInputCol("artist")
+        .setOutputCol("ArtistID")
+        .fit(raw_data)
+    val indexed_data = user_string_indexer
+      .transform(artist_string_indexer
+        .transform(raw_data))
+    val user_totals = indexed_data
+      .select("UserID","play_count")
+      .groupBy("UserID")
+      .sum("play_count")
+    val user_data_with_totals = indexed_data
+      .join(user_totals,Seq("UserID"))
+      .withColumn("RelativePreference",$"play_count"/$"sum(play_count)")
+    val rating_rdd:RDD[Rating] = user_data_with_totals
+      .select("UserID","ArtistID","RelativePreference")
+      .rdd.map{
+      case Row(userid:Double,artistid:Double,preference:Double)
+      => Rating(userid.toInt,artistid.toInt,preference.toFloat)
+      case x => throw new Exception(s"Unable to parse indexed row $x")
+    }
+    (rating_rdd,(user_string_indexer,artist_string_indexer))
+  }
+
+{% endhighlight %}
+
+The implicit preference model has three main parameters: 
+
+1. $$\alpha$$ : This parameter determines how much confidence in a preference increases with the number of observations ( ie how much our confidence in a preference estimate rises as the number of observations increases).
+
+2. $$\lambda$$: This is a regularization parameter used during the least-squares estimation of the latent factor matrices.
+
+3. rank: This is the number of latent factors used in the model.
+
+In order to choose the best parameters for the model, the dataset was divided into a training dataset (60% of the data), a validation dataset (20%) and a hold-out testing dataset(20%). The training and validation datasets were used to choose parameters, and the final model performance was estimated using the hold-out dataset. Cross-validation would be a superior choice for parameter estimation, if sufficient computational resources were available.
+
+Evaluation of the models was made using the root mean square error scaled by the difference between minimum and maximum preference values.
+
+{% highlight scala %}
+object MFModelling {
+  def getRMSE(model: MatrixFactorizationModel, data: RDD[Rating], n: Long,max:Double,min:Double): Double = {
+    val predictions: RDD[Rating] = model.predict(data.map(x => (x.user, x.product)))
+    val predictionsAndRatings = predictions.map(x => ((x.user, x.product), x.rating))
+      .join(data.map(x => ((x.user, x.product), x.rating))).values
+    (math.sqrt(predictionsAndRatings.map(x => (x._1 - x._2) * (x._1 - x._2)).reduce(_ + _) / n))/(max-min)
+  }
+
+  def tune(ratings:RDD[Rating],sc:SparkContext) = {
+    val output_log = new File("output_log.txt")
+    val log_writer = new PrintWriter(output_log)
+    val n_cases = ratings.count()
+    val partitions = ratings.randomSplit(Array(0.6,0.2,0.2),1234L)
+    val train = partitions(0)
+    val valid = partitions(1)
+    val num_valid = valid.count()
+    val test = partitions(2)
+    val alphas = List(10d,40d,60d)
+    val lambdas = List(1d,10d)
+    val ranks = List(8,16,32)
+    var best_lambda = 0d
+    var best_alpha = 0d
+    var best_rank = 0
+    var best_score = 100000d
+    val preferences = ratings.map(r => r.rating)
+    val max_pref = preferences.max()
+    val min_pref = preferences.min()
+    for (alpha<-alphas ; lambda<-lambdas;rank <-ranks){
+      val model = ALS.trainImplicit(train,rank,10,lambda,alpha)
+      val model_rmse = getRMSE(model,valid,num_valid,max_pref,min_pref)
+      if (model_rmse < best_score){
+        best_lambda = lambda
+        best_alpha = alpha
+        best_rank = rank
+        best_score = model_rmse
+      }
+      log_writer.write(s"Lambda: $lambda Alpha: $alpha Rank: $rank Produced RMSE of $model_rmse \n")
+      log_writer.flush()
+    }
+    log_writer.write("Best Model:\n")
+    log_writer.flush()
+    log_writer.write(s"Lambda: $best_lambda Alpha: $best_alpha Rank: $best_rank Produced RMSE of $best_score\n")
+    log_writer.flush()
+
+    val best_model = ALS.trainImplicit(train,best_rank,10,best_lambda,best_alpha)
+    val n_test = test.count()
+    val best_model_test_rmse = getRMSE(best_model,test,n_test,max_pref,min_pref)
+    log_writer.write(s"Best model test dataset RMSE:$best_model_test_rmse")
+    log_writer.flush()
+    log_writer.close()
+  }
+
+}
+{% endhighlight%}
+
+The output log looked like this:
+
+~~~~~
+Lambda: 1.0 Alpha: 10.0 Rank: 8 Produced RMSE of 0.03128204092813031 
+Lambda: 1.0 Alpha: 10.0 Rank: 16 Produced RMSE of 0.031209175581209652 
+Lambda: 1.0 Alpha: 10.0 Rank: 32 Produced RMSE of 0.03116572424952008 
+Lambda: 10.0 Alpha: 10.0 Rank: 8 Produced RMSE of 0.03163246585234661 
+Lambda: 10.0 Alpha: 10.0 Rank: 16 Produced RMSE of 0.03163246585234661 
+Lambda: 10.0 Alpha: 10.0 Rank: 32 Produced RMSE of 0.03163246585234661 
+Lambda: 1.0 Alpha: 40.0 Rank: 8 Produced RMSE of 0.027157533550352376 
+Lambda: 1.0 Alpha: 40.0 Rank: 16 Produced RMSE of 0.026827741699611708 
+Lambda: 1.0 Alpha: 40.0 Rank: 32 Produced RMSE of 0.026717258416109477 
+Lambda: 10.0 Alpha: 40.0 Rank: 8 Produced RMSE of 0.03163246585233765 
+Lambda: 10.0 Alpha: 40.0 Rank: 16 Produced RMSE of 0.03163246585232619 
+Lambda: 10.0 Alpha: 40.0 Rank: 32 Produced RMSE of 0.031632465852299806 
+Lambda: 1.0 Alpha: 60.0 Rank: 8 Produced RMSE of 0.030867133206493664 
+Lambda: 1.0 Alpha: 60.0 Rank: 16 Produced RMSE of 0.031938792199053954 
+Lambda: 1.0 Alpha: 60.0 Rank: 32 Produced RMSE of 0.03388156645271553 
+Lambda: 10.0 Alpha: 60.0 Rank: 8 Produced RMSE of 0.031632465841033346 
+Lambda: 10.0 Alpha: 60.0 Rank: 16 Produced RMSE of 0.03163246584102217 
+Lambda: 10.0 Alpha: 60.0 Rank: 32 Produced RMSE of 0.03163246584099654 
+Best Model:
+Lambda: 1.0 Alpha: 40.0 Rank: 32 Produced RMSE of 0.026717258416109477
+Best model test dataset RMSE:0.02522357253146869
+~~~~~
+
+
+
+
+
+
+
+
+
