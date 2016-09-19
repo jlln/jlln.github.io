@@ -6,9 +6,9 @@
 </description>
     <link>http://yourdomain.com/</link>
     <atom:link href="http://yourdomain.com/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 19 Sep 2016 16:36:23 +0800</pubDate>
-    <lastBuildDate>Mon, 19 Sep 2016 16:36:23 +0800</lastBuildDate>
-    <generator>Jekyll v3.0.1</generator>
+    <pubDate>Mon, 19 Sep 2016 20:52:58 +0800</pubDate>
+    <lastBuildDate>Mon, 19 Sep 2016 20:52:58 +0800</lastBuildDate>
+    <generator>Jekyll v3.2.1</generator>
     
       <item>
         <title>Building a music recommendation system with Apache Spark and LastFM data</title>
@@ -20,8 +20,8 @@
       }
     },
     tex2jax: {
-      inlineMath: [ [&#39;$&#39;,&#39;$&#39;] ],
-      displayMath: [ [&#39;$$&#39;,&#39;$$&#39;] ],
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
       processEscapes: true,
     }
   });
@@ -492,15 +492,15 @@ th {
   }
 }
 @font-face {
-  font-family: &#39;Glyphicons Halflings&#39;;
-  src: url(&#39;../components/bootstrap/fonts/glyphicons-halflings-regular.eot&#39;);
-  src: url(&#39;../components/bootstrap/fonts/glyphicons-halflings-regular.eot?#iefix&#39;) format(&#39;embedded-opentype&#39;), url(&#39;../components/bootstrap/fonts/glyphicons-halflings-regular.woff2&#39;) format(&#39;woff2&#39;), url(&#39;../components/bootstrap/fonts/glyphicons-halflings-regular.woff&#39;) format(&#39;woff&#39;), url(&#39;../components/bootstrap/fonts/glyphicons-halflings-regular.ttf&#39;) format(&#39;truetype&#39;), url(&#39;../components/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular&#39;) format(&#39;svg&#39;);
+  font-family: 'Glyphicons Halflings';
+  src: url('../components/bootstrap/fonts/glyphicons-halflings-regular.eot');
+  src: url('../components/bootstrap/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../components/bootstrap/fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('../components/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'), url('../components/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../components/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
 }
 .glyphicon {
   position: relative;
   top: 1px;
   display: inline-block;
-  font-family: &#39;Glyphicons Halflings&#39;;
+  font-family: 'Glyphicons Halflings';
   font-style: normal;
   font-weight: normal;
   line-height: 1;
@@ -1725,7 +1725,7 @@ blockquote .small {
 blockquote footer:before,
 blockquote small:before,
 blockquote .small:before {
-  content: &#39;\2014 \00A0&#39;;
+  content: '\2014 \00A0';
 }
 .blockquote-reverse,
 blockquote.pull-right {
@@ -1741,7 +1741,7 @@ blockquote.pull-right footer:before,
 blockquote.pull-right small:before,
 .blockquote-reverse .small:before,
 blockquote.pull-right .small:before {
-  content: &#39;&#39;;
+  content: '';
 }
 .blockquote-reverse footer:after,
 blockquote.pull-right footer:after,
@@ -1749,7 +1749,7 @@ blockquote.pull-right footer:after,
 blockquote.pull-right small:after,
 .blockquote-reverse .small:after,
 blockquote.pull-right .small:after {
-  content: &#39;\00A0 \2014&#39;;
+  content: '\00A0 \2014';
 }
 address {
   margin-bottom: 18px;
@@ -6546,7 +6546,7 @@ button.close {
   background-image: -o-linear-gradient(left, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.0001) 100%);
   background-image: linear-gradient(to right, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.0001) 100%);
   background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=&#39;#80000000&#39;, endColorstr=&#39;#00000000&#39;, GradientType=1);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#80000000', endColorstr='#00000000', GradientType=1);
 }
 .carousel-control.right {
   left: auto;
@@ -6555,7 +6555,7 @@ button.close {
   background-image: -o-linear-gradient(left, rgba(0, 0, 0, 0.0001) 0%, rgba(0, 0, 0, 0.5) 100%);
   background-image: linear-gradient(to right, rgba(0, 0, 0, 0.0001) 0%, rgba(0, 0, 0, 0.5) 100%);
   background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=&#39;#00000000&#39;, endColorstr=&#39;#80000000&#39;, GradientType=1);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000', endColorstr='#80000000', GradientType=1);
 }
 .carousel-control:hover,
 .carousel-control:focus {
@@ -6593,10 +6593,10 @@ button.close {
   font-family: serif;
 }
 .carousel-control .icon-prev:before {
-  content: &#39;\2039&#39;;
+  content: '\2039';
 }
 .carousel-control .icon-next:before {
-  content: &#39;\203a&#39;;
+  content: '\203a';
 }
 .carousel-indicators {
   position: absolute;
@@ -6980,9 +6980,9 @@ button.close {
 /* FONT PATH
  * -------------------------- */
 @font-face {
-  font-family: &#39;FontAwesome&#39;;
-  src: url(&#39;../components/font-awesome/fonts/fontawesome-webfont.eot?v=4.2.0&#39;);
-  src: url(&#39;../components/font-awesome/fonts/fontawesome-webfont.eot?#iefix&amp;v=4.2.0&#39;) format(&#39;embedded-opentype&#39;), url(&#39;../components/font-awesome/fonts/fontawesome-webfont.woff?v=4.2.0&#39;) format(&#39;woff&#39;), url(&#39;../components/font-awesome/fonts/fontawesome-webfont.ttf?v=4.2.0&#39;) format(&#39;truetype&#39;), url(&#39;../components/font-awesome/fonts/fontawesome-webfont.svg?v=4.2.0#fontawesomeregular&#39;) format(&#39;svg&#39;);
+  font-family: 'FontAwesome';
+  src: url('../components/font-awesome/fonts/fontawesome-webfont.eot?v=4.2.0');
+  src: url('../components/font-awesome/fonts/fontawesome-webfont.eot?#iefix&amp;v=4.2.0') format('embedded-opentype'), url('../components/font-awesome/fonts/fontawesome-webfont.woff?v=4.2.0') format('woff'), url('../components/font-awesome/fonts/fontawesome-webfont.ttf?v=4.2.0') format('truetype'), url('../components/font-awesome/fonts/fontawesome-webfont.svg?v=4.2.0#fontawesomeregular') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -9760,7 +9760,7 @@ div.cell.selected.jupyter-soft-selected {
   text-align: right;
   /* This has to match that of the the CodeMirror class line-height below */
   line-height: 1.21429em;
-  /* Don&#39;t highlight prompt number selection */
+  /* Don't highlight prompt number selection */
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -10281,7 +10281,7 @@ div.output_text {
   /* This has to match that of the the CodeMirror class line-height below */
   line-height: 1.21429em;
 }
-/* stdout/stderr are &#39;text&#39; as well as &#39;stream&#39;, but execute_result/error are *not* streams */
+/* stdout/stderr are 'text' as well as 'stream', but execute_result/error are *not* streams */
 div.output_stderr {
   background: #fdd;
   /* very light red background for stderr */
@@ -11034,7 +11034,7 @@ ul#help_menu li a i {
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  content: &#39; &#39;;
+  content: ' ';
 }
 .command_mode .modal_indicator:before.pull-left {
   margin-right: .3em;
@@ -11443,7 +11443,7 @@ div#pager .ui-resizable-handle {
         the resize handle. */
 }
 div#pager .ui-resizable-handle::after {
-  content: &#39;&#39;;
+  content: '';
   top: 2px;
   left: 50%;
   height: 3px;
@@ -11586,7 +11586,7 @@ li.pulse.open &gt; a.dropdown-toggle {
  * try to get back the less file by reverting somme commit in history
  **/
 /*
- * We&#39;ll try to get something pretty, so we
+ * We'll try to get something pretty, so we
  * have some strange css to have the scroll bar on
  * the left with fix button on the top right of the tooltip
  */
@@ -11952,16 +11952,16 @@ div#notebook {
     &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
     MathJax.Hub.Config({
         tex2jax: {
-            inlineMath: [ [&#39;$&#39;,&#39;$&#39;], [&quot;\\(&quot;,&quot;\\)&quot;] ],
-            displayMath: [ [&#39;$$&#39;,&#39;$$&#39;], [&quot;\\[&quot;,&quot;\\]&quot;] ],
+            inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
+            displayMath: [ ['$$','$$'], [&quot;\\[&quot;,&quot;\\]&quot;] ],
             processEscapes: true,
             processEnvironments: true
         },
         // Center justify equations in code and markdown cells. Elsewhere
         // we use CSS to left justify single line equations in code cells.
-        displayAlign: &#39;center&#39;,
+        displayAlign: 'center',
         &quot;HTML-CSS&quot;: {
-            styles: {&#39;.MathJax_Display&#39;: {&quot;margin&quot;: 0}},
+            styles: {'.MathJax_Display': {&quot;margin&quot;: 0}},
             linebreaks: { automatic: true }
         }
     });
@@ -12933,7 +12933,7 @@ score:0.736707702949761, N_estimators:600 learning_rate:0.02
     
       <item>
         <title>Animal Rescue Kaggle Competition Part One: Exploratory Data Analysis</title>
-        <description>&lt;p&gt;Kaggle recently ran a competition with the goal of predicting outcomes for animals in a shelter. Below is my initial exploratory analysis of the data. I used Python3 and the Pandas library to explore the tabular data. I also made use of the BeautifulSoup library to scrape and parse data from wikipedia concerning kennel club classification of dog breeds.&lt;/p&gt;
+        <description>&lt;p&gt;Kaggle recently ran a competition with the goal of predicting outcomes for animals in a shelter. Below is my initial analysis of the data. I used Python3 and the Pandas library to explore the tabular data. I also made use of the BeautifulSoup library to scrape and parse data from wikipedia concerning kennel club classification of dog breeds.&lt;/p&gt;
 &lt;html&gt;
 &lt;head&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;
 &lt;title&gt;AnimalRescueEDA&lt;/title&gt;
@@ -13202,15 +13202,15 @@ th {
   }
 }
 @font-face {
-  font-family: &#39;Glyphicons Halflings&#39;;
-  src: url(&#39;../components/bootstrap/fonts/glyphicons-halflings-regular.eot&#39;);
-  src: url(&#39;../components/bootstrap/fonts/glyphicons-halflings-regular.eot?#iefix&#39;) format(&#39;embedded-opentype&#39;), url(&#39;../components/bootstrap/fonts/glyphicons-halflings-regular.woff2&#39;) format(&#39;woff2&#39;), url(&#39;../components/bootstrap/fonts/glyphicons-halflings-regular.woff&#39;) format(&#39;woff&#39;), url(&#39;../components/bootstrap/fonts/glyphicons-halflings-regular.ttf&#39;) format(&#39;truetype&#39;), url(&#39;../components/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular&#39;) format(&#39;svg&#39;);
+  font-family: 'Glyphicons Halflings';
+  src: url('../components/bootstrap/fonts/glyphicons-halflings-regular.eot');
+  src: url('../components/bootstrap/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../components/bootstrap/fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('../components/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'), url('../components/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../components/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
 }
 .glyphicon {
   position: relative;
   top: 1px;
   display: inline-block;
-  font-family: &#39;Glyphicons Halflings&#39;;
+  font-family: 'Glyphicons Halflings';
   font-style: normal;
   font-weight: normal;
   line-height: 1;
@@ -14435,7 +14435,7 @@ blockquote .small {
 blockquote footer:before,
 blockquote small:before,
 blockquote .small:before {
-  content: &#39;\2014 \00A0&#39;;
+  content: '\2014 \00A0';
 }
 .blockquote-reverse,
 blockquote.pull-right {
@@ -14451,7 +14451,7 @@ blockquote.pull-right footer:before,
 blockquote.pull-right small:before,
 .blockquote-reverse .small:before,
 blockquote.pull-right .small:before {
-  content: &#39;&#39;;
+  content: '';
 }
 .blockquote-reverse footer:after,
 blockquote.pull-right footer:after,
@@ -14459,7 +14459,7 @@ blockquote.pull-right footer:after,
 blockquote.pull-right small:after,
 .blockquote-reverse .small:after,
 blockquote.pull-right .small:after {
-  content: &#39;\00A0 \2014&#39;;
+  content: '\00A0 \2014';
 }
 address {
   margin-bottom: 18px;
@@ -19256,7 +19256,7 @@ button.close {
   background-image: -o-linear-gradient(left, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.0001) 100%);
   background-image: linear-gradient(to right, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.0001) 100%);
   background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=&#39;#80000000&#39;, endColorstr=&#39;#00000000&#39;, GradientType=1);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#80000000', endColorstr='#00000000', GradientType=1);
 }
 .carousel-control.right {
   left: auto;
@@ -19265,7 +19265,7 @@ button.close {
   background-image: -o-linear-gradient(left, rgba(0, 0, 0, 0.0001) 0%, rgba(0, 0, 0, 0.5) 100%);
   background-image: linear-gradient(to right, rgba(0, 0, 0, 0.0001) 0%, rgba(0, 0, 0, 0.5) 100%);
   background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=&#39;#00000000&#39;, endColorstr=&#39;#80000000&#39;, GradientType=1);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000', endColorstr='#80000000', GradientType=1);
 }
 .carousel-control:hover,
 .carousel-control:focus {
@@ -19303,10 +19303,10 @@ button.close {
   font-family: serif;
 }
 .carousel-control .icon-prev:before {
-  content: &#39;\2039&#39;;
+  content: '\2039';
 }
 .carousel-control .icon-next:before {
-  content: &#39;\203a&#39;;
+  content: '\203a';
 }
 .carousel-indicators {
   position: absolute;
@@ -19690,9 +19690,9 @@ button.close {
 /* FONT PATH
  * -------------------------- */
 @font-face {
-  font-family: &#39;FontAwesome&#39;;
-  src: url(&#39;../components/font-awesome/fonts/fontawesome-webfont.eot?v=4.2.0&#39;);
-  src: url(&#39;../components/font-awesome/fonts/fontawesome-webfont.eot?#iefix&amp;v=4.2.0&#39;) format(&#39;embedded-opentype&#39;), url(&#39;../components/font-awesome/fonts/fontawesome-webfont.woff?v=4.2.0&#39;) format(&#39;woff&#39;), url(&#39;../components/font-awesome/fonts/fontawesome-webfont.ttf?v=4.2.0&#39;) format(&#39;truetype&#39;), url(&#39;../components/font-awesome/fonts/fontawesome-webfont.svg?v=4.2.0#fontawesomeregular&#39;) format(&#39;svg&#39;);
+  font-family: 'FontAwesome';
+  src: url('../components/font-awesome/fonts/fontawesome-webfont.eot?v=4.2.0');
+  src: url('../components/font-awesome/fonts/fontawesome-webfont.eot?#iefix&amp;v=4.2.0') format('embedded-opentype'), url('../components/font-awesome/fonts/fontawesome-webfont.woff?v=4.2.0') format('woff'), url('../components/font-awesome/fonts/fontawesome-webfont.ttf?v=4.2.0') format('truetype'), url('../components/font-awesome/fonts/fontawesome-webfont.svg?v=4.2.0#fontawesomeregular') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -22470,7 +22470,7 @@ div.cell.selected.jupyter-soft-selected {
   text-align: right;
   /* This has to match that of the the CodeMirror class line-height below */
   line-height: 1.21429em;
-  /* Don&#39;t highlight prompt number selection */
+  /* Don't highlight prompt number selection */
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -22991,7 +22991,7 @@ div.output_text {
   /* This has to match that of the the CodeMirror class line-height below */
   line-height: 1.21429em;
 }
-/* stdout/stderr are &#39;text&#39; as well as &#39;stream&#39;, but execute_result/error are *not* streams */
+/* stdout/stderr are 'text' as well as 'stream', but execute_result/error are *not* streams */
 div.output_stderr {
   background: #fdd;
   /* very light red background for stderr */
@@ -23744,7 +23744,7 @@ ul#help_menu li a i {
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  content: &#39; &#39;;
+  content: ' ';
 }
 .command_mode .modal_indicator:before.pull-left {
   margin-right: .3em;
@@ -24153,7 +24153,7 @@ div#pager .ui-resizable-handle {
         the resize handle. */
 }
 div#pager .ui-resizable-handle::after {
-  content: &#39;&#39;;
+  content: '';
   top: 2px;
   left: 50%;
   height: 3px;
@@ -24296,7 +24296,7 @@ li.pulse.open &gt; a.dropdown-toggle {
  * try to get back the less file by reverting somme commit in history
  **/
 /*
- * We&#39;ll try to get something pretty, so we
+ * We'll try to get something pretty, so we
  * have some strange css to have the scroll bar on
  * the left with fix button on the top right of the tooltip
  */
@@ -24662,16 +24662,16 @@ div#notebook {
     &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
     MathJax.Hub.Config({
         tex2jax: {
-            inlineMath: [ [&#39;$&#39;,&#39;$&#39;], [&quot;\\(&quot;,&quot;\\)&quot;] ],
-            displayMath: [ [&#39;$$&#39;,&#39;$$&#39;], [&quot;\\[&quot;,&quot;\\]&quot;] ],
+            inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
+            displayMath: [ ['$$','$$'], [&quot;\\[&quot;,&quot;\\]&quot;] ],
             processEscapes: true,
             processEnvironments: true
         },
         // Center justify equations in code and markdown cells. Elsewhere
         // we use CSS to left justify single line equations in code cells.
-        displayAlign: &#39;center&#39;,
+        displayAlign: 'center',
         &quot;HTML-CSS&quot;: {
-            styles: {&#39;.MathJax_Display&#39;: {&quot;margin&quot;: 0}},
+            styles: {'.MathJax_Display': {&quot;margin&quot;: 0}},
             linebreaks: { automatic: true }
         }
     });
@@ -24725,7 +24725,7 @@ There is a weekly pattern to the outcomes for both cats and dogs.&lt;/p&gt;
 &lt;p&gt;Transfers show a large number of events at 0 hours both for cats and dogs. This is most likely a result of transfer times not being entered. The majority of actual cat transfers appear to occur at 9am each morning. Dog patterns occur throughout the week at various times, with an obvious elevation at 4pm on a Friday.&lt;/p&gt;
 &lt;p&gt;Returns appear to happen between 11am and 6pm for both cats and dogs. As with transfers, there is an apparent artifact at 0 hours where time data was probably not entered.&lt;/p&gt;
 &lt;h2 id=&quot;Animal-Ages:&quot;&gt;Animal Ages:&lt;a class=&quot;anchor-link&quot; href=&quot;#Animal-Ages:&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;There is an overrepresentation of animals of age 0 being returned to their owners or transferred. This is most likely due to their leaving the shelter before an age could be entered into the system. For both cats and dogs, animals in the puppy/kitten age group seem to be both the most frequent within the shelter, and the most popular for adoption.&lt;/p&gt;
-&lt;h2 id=&quot;Names:&quot;&gt;Names:&lt;a class=&quot;anchor-link&quot; href=&quot;#Names:&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A cat&#39;s name is probably useful to predict the chance of it being adopted, but the effect is not very strong. For dogs, the name appears to be much more important. For example, dogs named Daisy, Lucy, or Buddy seem to have better adoption rates than those named Max, Bella, or Rocky.&lt;/p&gt;
+&lt;h2 id=&quot;Names:&quot;&gt;Names:&lt;a class=&quot;anchor-link&quot; href=&quot;#Names:&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A cat's name is probably useful to predict the chance of it being adopted, but the effect is not very strong. For dogs, the name appears to be much more important. For example, dogs named Daisy, Lucy, or Buddy seem to have better adoption rates than those named Max, Bella, or Rocky.&lt;/p&gt;
 &lt;h2 id=&quot;Breeds:&quot;&gt;Breeds:&lt;a class=&quot;anchor-link&quot; href=&quot;#Breeds:&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The more common breeds of cats outnumber the rarer ones by more than 1000-fold. Cat breeds do have an effect on outcome, with Domestic Shorthairs (the most common type of breed) being significantly less likely to be adopted or returned to an owner than other breed types.&lt;/p&gt;
 &lt;p&gt;Almost all of the dogs were mixed breeds. When considering dogs in terms of type ( as defined by The Kennel Club of The United Kingom):&lt;/p&gt;
 &lt;ul&gt;
@@ -24734,7 +24734,7 @@ There is a weekly pattern to the outcomes for both cats and dogs.&lt;/p&gt;
 &lt;li&gt;Sporting, Hound, and Working dogs are more likely to be returned to their owners (Maybe these dogs are more likely to get lost in the first place if they are being used for hunting etc?). &lt;/li&gt;
 &lt;li&gt;Utility and Toy dogs have the highest transfer rates.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Scary dogs (ie those breeds I personally consider to be more dangerous) are three times as likely to be euthanised as non-scary dogs, and are also less likely to be adopted. They are however more likely to be returned to their owners. As one would expect, scariness has no effect on a dog&#39;s chances of dying from natural causes.&lt;/p&gt;
+&lt;p&gt;Scary dogs (ie those breeds I personally consider to be more dangerous) are three times as likely to be euthanised as non-scary dogs, and are also less likely to be adopted. They are however more likely to be returned to their owners. As one would expect, scariness has no effect on a dog's chances of dying from natural causes.&lt;/p&gt;
 &lt;h2 id=&quot;Colors:&quot;&gt;Colors:&lt;a class=&quot;anchor-link&quot; href=&quot;#Colors:&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Cats with a rare color are more likely to be euthanised, but there is no obvious reason for this.&lt;/p&gt;
 
 &lt;/div&gt;
@@ -24745,7 +24745,7 @@ There is a weekly pattern to the outcomes for both cats and dogs.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;inner_cell&quot;&gt;
 &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
-&lt;p&gt;&lt;strong&gt;This project will require a lot of grouping and calculating fractions with groups, so I&#39;m going to write a function to make that easy&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;This project will require a lot of grouping and calculating fractions with groups, so I'm going to write a function to make that easy&lt;/strong&gt;&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -29577,7 +29577,7 @@ zMzMzMzMzKwS3IhhZmZmZmZmZpXwf9aHEct+lsw5AAAAAElFTkSuQmCC
 &lt;/div&gt;
 &lt;div class=&quot;inner_cell&quot;&gt;
 &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
-&lt;p&gt;&lt;strong&gt;Dog adoption times and days follow the same pattern as for cats. Transfers do not appear to occur at a particular time. There are patterns of elevated return and transfer rates at 0 hours, with consistency across days between the two rates - I&#39;m guessing this is due to the time not being entered for these cases.
+&lt;p&gt;&lt;strong&gt;Dog adoption times and days follow the same pattern as for cats. Transfers do not appear to occur at a particular time. There are patterns of elevated return and transfer rates at 0 hours, with consistency across days between the two rates - I'm guessing this is due to the time not being entered for these cases.
 There is a significantly elevated euthanasia rate first thing Monday morning, and another at 9am on Sunday morning.&lt;/strong&gt;&lt;/p&gt;
 
 &lt;/div&gt;
@@ -41267,7 +41267,7 @@ AAAASUVORK5CYII=
 &lt;/div&gt;
 &lt;div class=&quot;inner_cell&quot;&gt;
 &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
-&lt;p&gt;&lt;strong&gt;Almost all of the dogs have at least one unknown type component. I am going to try conditioning on a single component (Type2) ignoring Type1 which is almost entirely composed of &#39;Unknown&#39; values. &lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Almost all of the dogs have at least one unknown type component. I am going to try conditioning on a single component (Type2) ignoring Type1 which is almost entirely composed of 'Unknown' values. &lt;/strong&gt;&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -42737,7 +42737,7 @@ AABJRU5ErkJggg==
 &lt;p&gt;&lt;strong&gt;Terriers,Gundogs, Pastoral, and Toy Dogs are more likely to be adopted.&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Sporting, Hound, and Working dogs are more likely to be returned to their owners (Maybe these dogs are more likely to get lost in the first place if they are being used for hunting etc?).&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Utility and Toy dogs have the highest transfer rates.&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;While considering dog breeds, I also want to try and capture the subjective perceptions that people my have about certain breeds. I&#39;m going to make a list of dog breeds that make me uncomfortable&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;While considering dog breeds, I also want to try and capture the subjective perceptions that people my have about certain breeds. I'm going to make a list of dog breeds that make me uncomfortable&lt;/strong&gt;&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -43548,7 +43548,7 @@ JEnqYyb0kiRJUh8zoZckSZL62P8HXHPTI+2Isu8AAAAASUVORK5CYII=
 &lt;/div&gt;
 &lt;div class=&quot;inner_cell&quot;&gt;
 &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
-&lt;p&gt;&lt;strong&gt;Scary dogs are three times as likely to be euthanised as non-scary dogs, and are also less likely to be adopted. They are however more likely to be returned to their owners. As one would expect, scariness has no effect on a dog&#39;s chances of dying from natural causes.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Scary dogs are three times as likely to be euthanised as non-scary dogs, and are also less likely to be adopted. They are however more likely to be returned to their owners. As one would expect, scariness has no effect on a dog's chances of dying from natural causes.&lt;/strong&gt;&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
