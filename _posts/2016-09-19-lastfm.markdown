@@ -13,13 +13,13 @@ Such systems operate by representing users and items as vectors of latent factor
 
 The LastFM data is an example of [implicit preference data](http://yifanhu.net/PUB/cf.pdf). This is data in which the user has not actually expressed their preference for an item directly. Such data includes things like how long a user watched a video for, how long a user spent on a webpage, or, in this case, how many times a user listened to a particular artist. Such data has the following properties that can complicate its use in collaborative filtering:
 
-1. <b>No negative feedback:</b> A user didn’t watch a show. Is this because they don’t like that show, or because they are not aware of its existence?
-2. <b>Inherently noisy data:</b> Users can (and do) consume content or products that they dislike.
-3. <b>Implicit feedback measures actions, which do not necessarily reflect preferences:</b> For example, a user’s favourite TV series with a short run will be watched fewer times than a long-running tv show that the user only moderately enjoys. Another consideration is user-to-user variations in overall behaviour. In our case, a person who listens to a lot of music will have higher counts across all items compared to someone who listens to less music generally.
-5. <b>Implicit feedback has no absent values:</b> With explicit feedback, items that a user has not rated are not used to train the model. With implicit feedback, items that a user has not interacted with are given an observed value of 0 and are used in model training. As a consequence of this, the cost function has significantly more terms, meaning that the stochastic gradient descent optimisation frequently used in explicit feedback cannot be used. Instead, an alternating least squares approach is used by alternatively fixing the user factors and items factors.
+<b>No negative feedback:</b> A user didn’t watch a show. Is this because they don’t like that show, or because they are not aware of its existence?
+<b>Inherently noisy data:</b> Users can (and do) consume content or products that they dislike.
+<b>Implicit feedback measures actions, which do not necessarily reflect preferences:</b> For example, a user’s favourite TV series with a short run will be watched fewer times than a long-running tv show that the user only moderately enjoys. Another consideration is user-to-user variations in overall behaviour. In our case, a person who listens to a lot of music will have higher counts across all items compared to someone who listens to less music generally.
+<b>Implicit feedback has no absent values:</b> With explicit feedback, items that a user has not rated are not used to train the model. With implicit feedback, items that a user has not interacted with are given an observed value of 0 and are used in model training. As a consequence of this, the cost function has significantly more terms, meaning that the stochastic gradient descent optimisation frequently used in explicit feedback cannot be used. Instead, an alternating least squares approach is used by alternatively fixing the user factors and items factors.
 
 
-In this exercise I used Apache Spark to write a scala program to parse LastFM data, then build, tune, and evaluate a recommendation model. Apache Spark has excellent support for implicit preference modelling, which together with its performance and scalability makes it a great choice for this task.
+In this exercise I used Apache Spark to write to parse LastFM data, then build, tune, and evaluate a recommendation model. Apache Spark has excellent support for implicit preference modelling, which together with its performance and scalability makes it a great choice for this task.
 
 The [LastFM dataset](http://www.dtic.upf.edu/~ocelma/MusicRecommendationDataset/index.html) is a 1.5gb file, with each row containing a tuple of the form (user, artist-mbid, artist-name, total-plays)
 
@@ -86,9 +86,9 @@ object Parser {
 
 The implicit preference model has three main parameters: 
 
-1. $$\alpha$$ : This parameter determines how much confidence in a preference increases with the number of observations ( ie how much our confidence in a preference estimate rises as the number of observations increases).
+1. $$\alpha$$ (alpha) : This parameter determines how much confidence in a preference increases with the number of observations ( ie how much our confidence in a preference estimate rises as the number of observations increases).
 
-2. $$\lambda$$: This is a regularization parameter used during the least-squares estimation of the latent factor matrices.
+2. $$\lambda$$ (lambda): This is a regularization parameter used during the least-squares estimation of the latent factor matrices.
 
 3. rank: This is the number of latent factors used in the model.
 
