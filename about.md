@@ -1,6 +1,6 @@
 ---
 layout: page
-title: James Allen
+title: About
 permalink: /about/
 ---
 
