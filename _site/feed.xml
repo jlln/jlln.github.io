@@ -6,8 +6,8 @@
 </description>
     <link>http://yourdomain.com/</link>
     <atom:link href="http://yourdomain.com/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 19 Sep 2016 16:24:32 +0800</pubDate>
-    <lastBuildDate>Mon, 19 Sep 2016 16:24:32 +0800</lastBuildDate>
+    <pubDate>Mon, 19 Sep 2016 16:36:23 +0800</pubDate>
+    <lastBuildDate>Mon, 19 Sep 2016 16:36:23 +0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
@@ -223,8 +223,7 @@ Best model test dataset RMSE:0.02522357253146869
         <title>Animal Rescue Kaggle Competition Part Two: XGBoost Model</title>
         <description>&lt;p&gt;Kaggle recently ran a competition with the goal of predicting outcomes for animals in a shelter. In &lt;a href=&quot;/analysis,kaggle/2016/09/19/animal-rescue-one.html&quot;&gt;part one&lt;/a&gt;, I posted my initial exploratory analysis of the data. Here, I will post the model that I developed to meet the objective of the competition. 
 In this model I used calculated features (eg the proportion of animals with a given name that were adopted) in order to reduce dimensionality. This is often not a good idea, since it ignores any possible interaction effects of the consumed feature. However, in this instance it worked well. Using this approach does raise difficulties when conducting cross-validation, due to information leakage. In order to overcome this issue I wrote a custom cross validation function. 
-This model produced a multiclass loss score of 0.69712 on the hidden testing dataset, putting it in the top 3% of competition entries.
-&amp;lt;!DOCTYPE html&amp;gt;&lt;/p&gt;
+This model produced a multiclass loss score of 0.69712 on the hidden testing dataset, putting it in the top 3% of competition entries.&lt;/p&gt;
 &lt;html&gt;
 &lt;head&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;
 &lt;title&gt;SimpleModels&lt;/title&gt;
@@ -12934,8 +12933,7 @@ score:0.736707702949761, N_estimators:600 learning_rate:0.02
     
       <item>
         <title>Animal Rescue Kaggle Competition Part One: Exploratory Data Analysis</title>
-        <description>&lt;p&gt;Kaggle recently ran a competition with the goal of predicting outcomes for animals in a shelter. Below is my initial exploratory analysis of the data. I used Python3 and the Pandas library to explore the tabular data. I also made use of the BeautifulSoup library to scrape and parse data from wikipedia concerning kennel club classification of dog breeds.
-&amp;lt;!DOCTYPE html&amp;gt;&lt;/p&gt;
+        <description>&lt;p&gt;Kaggle recently ran a competition with the goal of predicting outcomes for animals in a shelter. Below is my initial exploratory analysis of the data. I used Python3 and the Pandas library to explore the tabular data. I also made use of the BeautifulSoup library to scrape and parse data from wikipedia concerning kennel club classification of dog breeds.&lt;/p&gt;
 &lt;html&gt;
 &lt;head&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;
 &lt;title&gt;AnimalRescueEDA&lt;/title&gt;
