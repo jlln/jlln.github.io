@@ -19,7 +19,7 @@ The LastFM data is an example of [implicit preference data](yifanhu.net/PUB/cf.p
 5. <b>Implicit feedback has no absent values:</b> With explicit feedback, items that a user has not rated are not used to train the model. With implicit feedback, items that a user has not interacted with are given an observed value of 0 and are used in model training. As a consequence of this, the cost function has significantly more terms, meaning that the stochastic gradient descent optimisation used in explicit feedback cannot be used. Instead, an alternating least squares approach is used by alternatively fixing the user factors and items factors.
 
 
-In this exercise I used Apache Spark to write a scala program to parse LastFM data, then build, tune, and evaluate a reccomendation model. Apache Spark has excellent support for implicit preference modelling, which together with its performance and scalability makes it a great choice for this task.
+In this exercise I used Apache Spark to write a scala program to parse LastFM data, then build, tune, and evaluate a recommendation model. Apache Spark has excellent support for implicit preference modelling, which together with its performance and scalability makes it a great choice for this task.
 
 The [LastFM dataset](http://www.dtic.upf.edu/~ocelma/MusicRecommendationDataset/index.html) is a 1.5gb file, with each row containing a tuple of the form (user, artist-mbid, artist-name, total-plays)
 
