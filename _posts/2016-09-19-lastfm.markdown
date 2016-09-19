@@ -89,9 +89,9 @@ object Parser {
 
 The implicit preference model has three main parameters: 
 
-1.  $\alpha$  : This parameter determines how much confidence in a preference increases with the number of observations ( ie how much our confidence in a preference estimate rises as the number of observations increases).
+1. $$\alpha$$  : The alpha parameter determines how much confidence in a preference increases with the number of observations ( ie how much our confidence in a preference estimate rises as the number of observations increases).
 
-2. $\lambda$ : This is a regularization parameter used during the least-squares estimation of the latent factor matrices.
+2. $$\lambda$$ : The lambda parameter is a regularization parameter used during the least-squares estimation of the latent factor matrices.
 
 3. rank: This is the number of latent factors used in the model.
 
