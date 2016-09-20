@@ -37,7 +37,7 @@ james@Yggdrasil:~/Documents/LastFM/data$ head -n 100000 usersha1-artmbid-artname
 {% endhighlight %}
 
 The parser function ingests the data, giving each user and artist a unique numerical value (user_id and artist_id). It scales each play count by the total play count for that user, providing an explicit user-artist preference estimate.
-It then migrates each entry into the spark Rating class (which holds the user_id, artist_id, and user-artist-preference), before finally returning the collection of Ratings as an RDD.
+It then transforms each entry into the spark Rating class (which holds the user_id, artist_id, and user-artist-preference), before finally returning the collection of Ratings as an RDD.
 
 {% highlight scala %}
 object Parser {
