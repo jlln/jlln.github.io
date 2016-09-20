@@ -9,7 +9,7 @@
 title: James Allen
 email: james.allen.1248@gmail.com
 description: > # this means to ignore newlines until "baseurl:"
-  Assorted data analysis and programming projects.
+  Selected data analysis and programming projects.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "jlln.github.io" # the base hostname & protocol for your site
 twitter_username: 
