@@ -1,0 +1,11 @@
+---
+layout: post
+title:  "Propensity Modelling: Right Heart Catheterization"
+date:   2016-09-19 08:35:45 +0800
+categories: propensity-modelling
+---
+
+
+{% include RHC.html %}
+
+
