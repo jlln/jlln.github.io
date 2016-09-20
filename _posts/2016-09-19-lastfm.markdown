@@ -181,6 +181,7 @@ Lambda: 1.0 Alpha: 40.0 Rank: 32 Produced RMSE of 0.026717258416109477
 Best model test dataset RMSE:0.02522357253146869
 ~~~~~
 
+Full project can be viewed at [https://github.com/jlln/LastFM](https://github.com/jlln/LastFM)
 
 
 
