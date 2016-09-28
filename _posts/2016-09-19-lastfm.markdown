@@ -155,7 +155,7 @@ object MFModelling {
 }
 {% endhighlight%}
 
-The output log looked like this:
+The output log using the complete 1.5g dataset looked like this:
 
 ~~~~~
 Lambda: 1.0 Alpha: 10.0 Rank: 8 Produced RMSE of 0.03128204092813031 
