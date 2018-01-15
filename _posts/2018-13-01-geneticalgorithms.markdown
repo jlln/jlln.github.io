@@ -93,9 +93,9 @@ This function has four hyperparameters:
 3. Mutation rate - The probability of a mutation occurring per offspring.
 4. Population size - This is an implicit parameter determined by the size of the population input into the function.
 
-Assuming a constant and finite running time, for the algorithm, there is a tradeoff to be made between a large population and a large number of generations. A larger population will result in greater exploration of the search space in the initial stages, reducing the risk of being trapped in local minima. On the other hand, running the algorithm for more generations will allow greater confidence that the algorithm has converged on a solution. The mutation rate and litter size also influence this balance between exploration and convergence.
+Assuming a constant and finite running time for the algorithm, there is a tradeoff to be made between a large population and a large number of generations. A larger population will result in greater exploration of the search space in the initial stages, reducing the risk of being trapped in local minima. On the other hand, running the algorithm for more generations will allow greater confidence that the algorithm has converged on a solution. The mutation rate and litter size also influence this balance between exploration and convergence.
 
-In practice, it is obvious if the algorithm has converged by plotting the mean fitness of the population as the algorithm proceeds. Once convergence occurs the mean fitness will not change. One should therefore choose a reasonable number of generations and then set the population size accordingly.
+In practice, it is obvious if the algorithm has converged by plotting the mean fitness of the population as the algorithm proceeds. Once convergence occurs the mean fitness will not change. One should therefore choose a reasonable number of generations and then set the population size accordingly. However if the mean fitness is constant from the initial generation onwards, this indicates that the parameter space has not been adequately explored.
 
 # The Knapsack Problem
 
