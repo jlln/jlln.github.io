@@ -28,7 +28,7 @@ Breeding is performed by randomly choosing two parents from the population, with
 
 # Implementation
 
-I chose to break up the algorithm into problem specific "individuals" representing population members (implemented as Python classes), and a generic optimization routine that operates on all such classes. Here is the definition of the Individual Class template.
+I chose to break up the algorithm into problem-specific "individuals" representing population members (implemented as Python classes), and a generic optimization routine that operates on all such classes. Here is the definition of the Individual Class template.
 
 ```python
 class Individual:
