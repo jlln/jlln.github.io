@@ -26,7 +26,9 @@ This algorithm requires encoding a problem solution into a data structure that c
 
 Breeding is performed by randomly choosing two parents from the population, with the probability of selection being proportional to their fitness scores. The result is a population that shifts closer to the optimal solution with each generation.
 
-Here is the definition of the Individual Class template.
+# Implementation
+
+I chose to break up the algorithm into problem specific "individuals" representing population members (implemented as Python classes), and a generic optimization routine that operates on all such classes. Here is the definition of the Individual Class template.
 
 ```python
 class Individual:
@@ -48,7 +50,7 @@ class Individual:
 
 ```
 
-Here is an implementation of a breeding function that breeds and evaluates a new generation to return a new population.
+Here is the implementation of a breeding function that breeds and evaluates a new generation to return a new population.
 
 ```python
 def breed_population(population,mating_rate,litter_size,mutation_prob):
@@ -84,7 +86,7 @@ def breed_population(population,mating_rate,litter_size,mutation_prob):
 
 
 ```
-This implementation has four hyperparameters:
+This function has four hyperparameters:
 
 1. Mating Rate - The number of matings that will occur (as a fraction of the total population size)
 2. Litter size - The number of offspring produced by each mating.
