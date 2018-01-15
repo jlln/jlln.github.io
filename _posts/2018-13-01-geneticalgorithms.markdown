@@ -19,9 +19,9 @@ In a population of individuals, those individuals with genes encoding traits tha
 This process is the inspiration for the Genetic Algorithm approach to optimization. Most implementations of genetic algorithms emulate sexual reproduction and mutation.
 This algorithm requires encoding a problem solution into a data structure that can be: 
 
-    1. compared against its peers based on the quality of the solution,
-    2. combined with its peers to produce new solutions, and
-    3. randomly modified.
+1. compared against its peers based on the quality of the solution,
+2. combined with its peers to produce new solutions, and
+3. randomly modified.
     
 
 Breeding is performed by randomly choosing two parents from the population, with the probability of selection being proportional to their fitness scores. The result is a population that shifts closer to the optimal solution with each generation.
@@ -86,10 +86,10 @@ def breed_population(population,mating_rate,litter_size,mutation_prob):
 ```
 This implementation has four hyperparameters:
 
-    1. Mating Rate - The number of matings that will occur (as a fraction of the total population size)
-    2. Litter size - The number of offspring produced by each mating.
-    3. Mutation rate - The probability of a mutation occurring per offspring.
-    4. Population size - This is an implicit parameter determined by the size of the population input into the function.
+1. Mating Rate - The number of matings that will occur (as a fraction of the total population size)
+2. Litter size - The number of offspring produced by each mating.
+3. Mutation rate - The probability of a mutation occurring per offspring.
+4. Population size - This is an implicit parameter determined by the size of the population input into the function.
 
 Assuming a constant and finite running time, for the algorithm, there is a tradeoff to be made between a large population and a large number of generations. A larger population will result in greater exploration of the search space in the initial stages, reducing the risk of being trapped in local minima. On the other hand, running the algorithm for more generations will allow greater confidence that the algorithm has converged on a solution. The mutation rate and litter size also influence this balance between exploration and convergence.
 
