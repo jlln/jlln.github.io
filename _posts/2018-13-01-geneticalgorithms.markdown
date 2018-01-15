@@ -236,6 +236,16 @@ I tested this method with the Rosenbrock function, a classic test for numerical 
 
 ![](https://github.com/jlln/jlln.github.io/raw/master/images/GA/rosenbrock.jpg)
 
-I also tested this method with the Himmelblau function, which is another classical test for numerical methods. In this case, I had to significantly increase the population size (to 1000 up from 10) in order to sufficiently explore the parameter space. When the population was too slow, the algorithm could not find a gradient to follow.
+I also tested this method with the Himmelblau function, which is another classical test for numerical methods. In this case, I had to significantly increase the population size (to 1000 up from 10) in order to sufficiently explore the parameter space. When the population was too low, the algorithm could not find a gradient to follow. This optimization took around ~60 seconds to complete on my machine.
 
 ![](https://github.com/jlln/jlln.github.io/raw/master/images/GA/himmelblau.jpg)
+
+
+
+# Summary
+
+- This is an effective technique for certain problems.
+- If the complexity of the fitness scoring function is too great, the algorithm will perform very poorly, since the function is called many times.
+- This algorithm cannot be fully parallelized, but there are strategies for executing some parts in parallel.
+     - Could perform breeding and evaluation of offspring in parallel
+     - Could explore the search space in parallel before combining populations.
