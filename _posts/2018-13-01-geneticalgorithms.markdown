@@ -85,6 +85,7 @@ def breed_population(population,mating_rate,litter_size,mutation_prob):
 
 ```
 This implementation has four hyperparameters:
+
     1. Mating Rate - The number of matings that will occur (as a fraction of the total population size)
     2. Litter size - The number of offspring produced by each mating.
     3. Mutation rate - The probability of a mutation occurring per offspring.
@@ -249,3 +250,6 @@ I also tested this method with the Himmelblau function, which is another classic
 - This algorithm cannot be fully parallelized, but there are strategies for executing some parts in parallel.
      - Could perform breeding and evaluation of offspring in parallel
      - Could explore the search space in parallel before combining populations.
+- I like the fact that this technique produces a *population* of solutions. In the future I plan to explore the applications of this technique to machine learning, where it could be useful for producing ensembles.
+
+The full code for this project can be found at [https://github.com/jlln/GeneticKnapsack](https://github.com/jlln/GeneticKnapsack). However, I would advise using a state-of-the-art genetic algorithm library, such as (DEAP)[https://github.com/DEAP/deap].
