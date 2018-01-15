@@ -252,4 +252,4 @@ I also tested this method with the Himmelblau function, which is another classic
      - Could explore the search space in parallel before combining populations.
 - I like the fact that this technique produces a *population* of solutions. In the future I plan to explore the applications of this technique to machine learning, where it could be useful for producing ensembles.
 
-The full code for this project can be found at [https://github.com/jlln/GeneticKnapsack](https://github.com/jlln/GeneticKnapsack). However, I would advise using a state-of-the-art genetic algorithm library, such as (DEAP)[https://github.com/DEAP/deap].
+The full code for this project can be found at [https://github.com/jlln/GeneticKnapsack](https://github.com/jlln/GeneticKnapsack). However, I would advise using a state-of-the-art genetic algorithm library, such as !(DEAP)[https://github.com/DEAP/deap].
