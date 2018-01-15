@@ -236,6 +236,6 @@ I tested this method with the Rosenbrock function, a classic test for numerical 
 
 ![](https://github.com/jlln/jlln.github.io/raw/master/images/GA/rosenbrock.jpg)
 
-I also tested this method with the Himmelblau function, another classical test for numerical methods. In this case, I had to significantly increase the population size (to 1000 up from 10) in order to sufficiently explore the parameter space. When the population was too slow, the algorithm could not find a gradient to follow.
+I also tested this method with the Himmelblau function, which is another classical test for numerical methods. In this case, I had to significantly increase the population size (to 1000 up from 10) in order to sufficiently explore the parameter space. When the population was too slow, the algorithm could not find a gradient to follow.
 
 ![](https://github.com/jlln/jlln.github.io/raw/master/images/GA/himmelblau.jpg)
