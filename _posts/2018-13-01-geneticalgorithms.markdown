@@ -176,8 +176,8 @@ class KnapsackIndividual(Individual):
         
    ```
 
-    This problem can be solved with dynamic programming to find a guaranteed global minimum. [Using this implementation](http://rosettacode.org/wiki/Knapsack_problem/0-1#Recursive_dynamic_programming_algorithm) with randomly generated items produced a solution with a total value of 105 and a total weight of 99. Using the above genetic algorithm with the same set of items produced a total value of 105 and a total weight of 96.
-   ![](https://github.com/jlln/jlln.github.io/raw/master/images/GA/DP%20Knapsack%20Solution.png)
+This problem can be solved with dynamic programming to find a guaranteed global minimum. [Using this implementation](http://rosettacode.org/wiki/Knapsack_problem/0-1#Recursive_dynamic_programming_algorithm) with randomly generated items produced a solution with a total value of 105 and a total weight of 99. Using the above genetic algorithm with the same set of items produced a total value of 105 and a total weight of 96.
+![](https://github.com/jlln/jlln.github.io/raw/master/images/GA/DP%20Knapsack%20Solution.png)
 
 
    
