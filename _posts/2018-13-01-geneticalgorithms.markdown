@@ -188,7 +188,7 @@ This problem can be solved with dynamic programming to find a guaranteed global 
 
 Genetic Algorithms can also be used to optimize numerical functions. This is easier to implement than the knapsack problem. Input variables to some function are combined by taking a random value between the two parent values. Mutations are made by changing values.
 
-Here is an implementation that will work for finding minima to 2D functions.
+Here is an implementation that will work for finding minima of 2D functions.
 ```python
 class FunctionMinimizer2DIndividual(Individual):
     def __init__(self,function,x,y):
