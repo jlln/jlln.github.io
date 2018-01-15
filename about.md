@@ -4,4 +4,4 @@ title: About
 permalink: /about/
 ---
 
-<iframe width="800" height="1620"  src="https://docs.google.com/document/d/1CuVFqB7PC8FGflbvK9URTt5SUhK3_8u12dNa2J-vj_8/pub?embedded=true"></iframe>
+<iframe width="800" height="1620"  src="<iframe src="https://drive.google.com/file/d/0B3ENtnhv03ntd0tBMVVoT0tlQzNEYjRidWVlcmJIU3pUMVZJ/preview" width="640" height="480"></iframe>"></iframe>
