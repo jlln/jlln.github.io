@@ -99,7 +99,7 @@ In practice, it is obvious if the algorithm has converged by plotting the mean f
 The Knapsack Problem is a combinatorial optimization task where, given a set of items with values and weights, the optimal combination of items to maximize total value without exceeding some maximum weight must be found.
 
 Formally, given a list of items with weights $w_k$, and values $v_k$, for $k = 1,2,...,N$ and the maximum weight $q$, then find 
-$$\underset{v,w}{\operatorname{argmax}} (\sum_{k=0}^N)v_kx_k)$$ subject to $$\sum_{k=0}^N)v_kx_k) \leq q$$ where $x_1,x_2,...,x_n$ are binary encoded decision values indicating whether 0 or 1 of item $k$ were selected.
+$$\underset{v,w}{\operatorname{argmax}} (\sum_{k=0}^N)v_kx_k)$$ subject to $$\sum_{k=0}^N)w_kx_k) \leq q$$ where $x_1,x_2,...,x_n$ are binary encoded decision values indicating whether 0 or 1 of item $k$ were selected.
 
 A Genetic Algorthim can be used to find an approximate solution to this problem.
 
