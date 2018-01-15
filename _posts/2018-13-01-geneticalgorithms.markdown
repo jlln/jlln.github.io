@@ -255,10 +255,10 @@ I also tested this method with the Himmelblau function, which is another classic
 # Summary
 
 - This is an effective technique for certain problems.
-- If the complexity of the fitness scoring function is too great, the algorithm will perform very poorly, since the function is called many times.
+- If the complexity of the fitness scoring function is too great, the algorithm runtime will increase drastically, since this function is called many times.
 - This algorithm cannot be fully parallelized, but there are strategies for executing some parts in parallel.
-     - Could perform breeding and evaluation of offspring in parallel
-     - Could explore the search space in parallel before combining populations.
+     - Performing breeding and evaluation of offspring in parallel
+     - Exploring the search space in parallel before combining populations.
 - I like the fact that this technique produces a *population* of solutions. In the future I plan to explore the applications of this technique to machine learning, where it could be useful for producing ensembles.
 
-The full code for this project can be found at [https://github.com/jlln/GeneticKnapsack](https://github.com/jlln/GeneticKnapsack). However, I would advise using a state-of-the-art genetic algorithm library, such as [DEAP](https://github.com/DEAP/deap)
+The full code for this project can be found at [https://github.com/jlln/GeneticKnapsack](https://github.com/jlln/GeneticKnapsack). However, I would advise using a state-of-the-art genetic algorithm library, such as [DEAP](https://github.com/DEAP/deap) in production.
