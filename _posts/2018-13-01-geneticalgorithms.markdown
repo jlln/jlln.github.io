@@ -180,4 +180,4 @@ This problem can be solved with dynamic programming to find a guaranteed global 
 
 ![](https://github.com/jlln/jlln.github.io/raw/master/images/GA/DP%20Knapsack%20Solution.png)
 ![](https://github.com/jlln/jlln.github.io/raw/master/images/GA/GA%20Knapsack%20Solution.png)
-![](https://github.com/jlln/jlln.github.io/raw/master/images/GA/knapsack.png)
+![](https://github.com/jlln/jlln.github.io/raw/master/images/GA/knapsack.jpg)
